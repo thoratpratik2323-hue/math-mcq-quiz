@@ -36,7 +36,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 2rem auto;
             padding: 2rem;
             width: 100%;
@@ -79,6 +79,22 @@
             font-weight: bold;
         }
 
+        .timer-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
         .quiz-card {
             background: var(--card-bg);
             padding: 2.5rem;
@@ -93,10 +109,13 @@
             font-weight: bold;
             margin-bottom: 1rem;
             display: block;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .question-text {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             line-height: 1.6;
             margin-bottom: 2rem;
         }
@@ -116,7 +135,7 @@
             text-align: left;
             cursor: pointer;
             transition: 0.2s;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             outline: none;
         }
 
@@ -154,48 +173,57 @@
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 0.8rem 2rem;
+            padding: 0.8rem 2.5rem;
             border-radius: 10px;
             font-weight: 800;
             cursor: pointer;
             display: none;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
         }
 
         .result-screen {
             text-align: center;
             display: none;
+            padding-top: 4rem;
         }
 
         .result-screen h2 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
+            font-family: 'Outfit', sans-serif;
+            color: var(--accent);
+        }
+
+        .result-screen p {
+            margin-bottom: 1.5rem;
         }
 
         .restart-btn {
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 1rem 2.5rem;
+            padding: 1.2rem 3rem;
             border-radius: 12px;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
             margin-top: 2rem;
+            transition: 0.3s;
         }
 
-        .timer-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            width: 100%;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-            overflow: hidden;
+        .restart-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
         }
 
-        .timer-fill {
-            height: 100%;
-            background: var(--accent);
-            width: 100%;
-            transition: width 1s linear;
+        /* Performance badges */
+        .performance-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            margin: 2rem auto;
         }
 
         @media (max-width: 600px) {
@@ -205,6 +233,10 @@
 
             .quiz-card {
                 padding: 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
             }
         }
 
@@ -220,14 +252,15 @@
         <a href="https://thoratpratik2323-hue.github.io/ishu-math-hub/" class="btn-back">← Back to Hub</a>
 
         <header>
-            <h1>Math MCQ Master 🎯</h1>
-            <p style="color: #94a3b8;">Section A: Practice 20 Marks Pattern</p>
+            <h1>Section A Mastery 🎯</h1>
+            <p style="color: #94a3b8; font-size: 1.1rem; margin-top: 0.5rem;">Timed MCQ Practice for Ishu's 100/100
+                Mission</p>
         </header>
 
         <div id="quiz-container">
             <div class="score-board">
-                <span id="question-count">Question 1/10</span>
-                <span id="score-text">Score: 0</span>
+                <span id="question-count">Question 1/25</span>
+                <span id="score-text" style="color: var(--correct);">Score: 0</span>
             </div>
 
             <div class="timer-bar">
@@ -250,9 +283,11 @@
 
         <div class="result-screen" id="result-screen">
             <h2>Quiz Complete! 🎉</h2>
-            <p id="final-score" style="font-size: 1.5rem;"></p>
-            <p id="performance-msg"></p>
-            <button class="restart-btn" onclick="location.reload()">Try Again 🔄</button>
+            <div class="performance-card">
+                <p id="final-score" style="font-size: 2.5rem; font-weight: 800;"></p>
+                <p id="performance-msg" style="font-size: 1.2rem; color: #cbd5e1;"></p>
+            </div>
+            <button class="restart-btn" onclick="location.reload()">REPLAY QUIZ 🔄</button>
         </div>
     </div>
 
@@ -260,63 +295,153 @@
         const questions = [
             {
                 chap: "Relations & Functions",
-                q: "Let A = {1, 2, 3}. The number of equivalence relations containing (1, 2) is:",
-                options: ["1", "2", "3", "4"],
+                q: "The relation $R$ in the set $A = \{1, 2, 3\}$ given by $R = \{(1, 1), (2, 2), (3, 3), (1, 2), (2, 3)\}$ is:",
+                options: ["Reflexive only", "Reflexive and Symmetric", "Reflexive and Transitive", "Equivalence"],
+                correct: 0
+            },
+            {
+                chap: "Relations & Functions",
+                q: "Let $f: \mathbb{R} \to \mathbb{R}$ be defined by $f(x) = 3x$. Choose the correct answer:",
+                options: ["f is one-one onto", "f is many-one onto", "f is one-one but not onto", "f is neither one-one nor onto"],
+                correct: 0
+            },
+            {
+                chap: "Inverse Trigo",
+                q: "The principal value of $\cos^{-1} ( \cos \frac{7\pi}{6} )$ is:",
+                options: ["$7\pi/6$", "$5\pi/6$", "$\pi/6$", "$-\pi/6$"],
                 correct: 1
             },
             {
                 chap: "Inverse Trigo",
-                q: "The principal value of $\\sin^{-1} ( \\sin \\frac{2\\pi}{3} )$ is:",
-                options: ["$2\\pi/3$", "$\\pi/3$", "$\\pi/6$", "$-\\pi/3$"],
+                q: "$\tan^{-1} \sqrt{3} - \sec^{-1}(-2)$ is equal to:",
+                options: ["$\pi$", "$-\pi/3$", "$\pi/3$", $2\pi / 3$],
                 correct: 1
             },
             {
                 chap: "Matrices",
-                q: "If A and B are symmetric matrices of same order, then AB - BA is a:",
-                options: ["Skew symmetric matrix", "Symmetric matrix", "Zero matrix", "Identity matrix"],
+                q: "If $A$ is a square matrix such that $A^2=A$, then $(I+A)^3 - 7A$ is equal to:",
+                options: ["$A$", "$I-A$", "$I$", "$3A$"],
+                correct: 2
+            },
+            {
+                chap: "Matrices",
+                q: "Assume $X, Y, Z, W$ and $P$ are matrices of order $2 \times n, 3 \times k, 2 \times p, n \times 3$ and $p \times k$. The restriction on $n, k$ and $p$ so that $PY + WY$ will be defined is:",
+                options: ["$k=3, p=n$", "$k$ is arbitrary, $p=2$", "$p$ is arbitrary, $k=3$", "$k=2, p=3$"],
                 correct: 0
             },
             {
                 chap: "Determinants",
-                q: "If A is a square matrix of order 3 and $|A| = 5$, then $|adj A|$ is:",
-                options: ["5", "25", "125", "625"],
+                q: "If $A$ is a non-singular square matrix of order 3, then $|adj A|$ is equal to:",
+                options: ["$|A|$", "$|A|^2$", "$|A|^3$", "$3|A|$"],
+                correct: 1
+            },
+            {
+                chap: "Determinants",
+                q: "If $x, y, z$ are non-zero real numbers, then inverse of matrix $A = \begin{bmatrix} x & 0 & 0 \\ 0 & y & 0 \\ 0 & 0 & z \end{bmatrix}$ is:",
+                options: ["$Diag(1/x, 1/y, 1/z)$", "$xyz Diag(x, y, z)$", "$1/xyz Diag(x, y, z)$", "None"],
+                correct: 0
+            },
+            {
+                chap: "Calculus",
+                q: "The derivative of $\sin x$ with respect to $\cos x$ is:",
+                options: ["$-\tan x$", "$-\cot x$", "$\cot x$", "$\tan x$"],
                 correct: 1
             },
             {
                 chap: "Calculus",
-                q: "The derivative of $\\log_{10} x$ with respect to $x$ is:",
-                options: ["$1/x$", "$1/(x \\ln 10)$", "$\\ln 10 / x$", "None of these"],
+                q: "If $y = \log(\cos e^x)$, then $dy/dx$ is:",
+                options: ["$\cos e^x$", "$e^x \sin e^x$", "$-e^x \tan e^x$", "$e^x \tan e^x$"],
+                correct: 2
+            },
+            {
+                chap: "Application of Derivatives",
+                q: "The function $f(x) = x^x$ has a stationary point at:",
+                options: ["$x = e$", "$x = 1/e$", "$x = 1$", "None"],
                 correct: 1
             },
             {
                 chap: "Application of Derivatives",
-                q: "The slope of the tangent to the curve $y = x^3 - x$ at $x = 2$ is:",
-                options: ["11", "12", "10", "6"],
+                q: "The line $y = x + 1$ is a tangent to the curve $y^2 = 4x$ at the point:",
+                options: ["(1, 2)", "(2, 1)", "(1, -2)", "(-1, 2)"],
                 correct: 0
             },
             {
                 chap: "Integrals",
-                q: "Evaluate $\\int e^x (\\tan x + \\text{sec}^2x) dx$:",
-                options: ["$e^x \\tan x + C$", "$e^x \\sec x + C$", "$e^x \\sec^2x + C$", "None"],
+                q: "Evaluate: $\int \frac{dx}{\sqrt{9-25x^2}}$ is:",
+                options: ["$\frac{1}{5} \sin^{-1}(\frac{5x}{3}) + C$", "$\frac{1}{3} \sin^{-1}(\frac{5x}{3}) + C$", "$\sin^{-1}(\frac{5x}{3}) + C$", "None"],
                 correct: 0
             },
             {
+                chap: "Integrals",
+                q: "The value of $\int_{0}^{2/3} \frac{dx}{4+9x^2}$ is:",
+                options: ["$\pi/6$", "$\pi/12$", "$\pi/24$", "$\pi/4$"],
+                correct: 2
+            },
+            {
+                chap: "Application of Integrals",
+                q: "Area of the region bounded by the curve $y^2 = 4x, y$-axis and the line $y = 3$ is:",
+                options: ["$2$", "$9/4$", "$9/3$", "$9/2$"],
+                correct: 1
+            },
+            {
+                chap: "Differential Equations",
+                q: "The degree of the differential equation $[1 + (dy/dx)^2]^{3/2} = d^2y/dx^2$ is:",
+                options: ["1", "2", "3", "Not defined"],
+                correct: 1
+            },
+            {
                 chap: "Vectors",
-                q: "If $\\vec{a}$ is a non-zero vector of magnitude 'a' and $\\lambda$ a non-zero scalar, then $\\lambda \\vec{a}$ is a unit vector if:",
-                options: ["$\\lambda = 1$", "$\\lambda = -1$", "$a = |\\lambda|$", "$a = 1/|\\lambda|$"],
-                correct: 3
+                q: "The value of $\hat{i} \cdot (\hat{j} \times \hat{k}) + \hat{j} \cdot (\hat{i} \times \hat{k}) + \hat{k} \cdot (\hat{i} \times \hat{j})$ is:",
+                options: ["0", "-1", "1", "3"],
+                correct: 2
+            },
+            {
+                chap: "Vectors",
+                q: "If $\theta$ is the angle between two vectors $\vec{a}$ and $\vec{b}$, then $|\vec{a} \cdot \vec{b}| = |\vec{a} \times \vec{b}|$ when $\theta$ is:",
+                options: ["$0$", "$\pi/4$", "$\pi/2$", "$\pi$"],
+                correct: 1
             },
             {
                 chap: "3D Geometry",
-                q: "The distance of point (2, 3, 4) from the x-axis is:",
-                options: ["2", "$\\sqrt{13}$", "5", "$\\sqrt{20}$"],
+                q: "The coordinates of the foot of perpendicular from point $(0, 0, 0)$ to the plane $2x - 3y + 4z - 6 = 0$ is:",
+                options: ["$(2/29, -3/29, 4/29)$", "$(12/29, -18/29, 24/29)$", "$(6/29, -9/29, 12/29)$", "None"],
+                correct: 1
+            },
+            {
+                chap: "3D Geometry",
+                q: "The distance of a point $P(a, b, c)$ from the $xy-plane$ is:",
+                options: ["$a$", "$b$", "$c$", "$\sqrt{a^2+b^2}$"],
+                correct: 2
+            },
+            {
+                chap: "Linear Programming",
+                q: "If the feasible region for a LPP is unbounded, then maximum of Z:",
+                options: ["Does not exist", "May or may not exist", "Always exists", "None"],
+                correct: 1
+            },
+            {
+                chap: "Probability",
+                q: "If A and B are events such that $P(A|B) = P(B|A)$, then:",
+                options: ["$A \subset B$", "$A = B$", "$P(A) = P(B)$", "$A \cap B = \emptyset$"],
                 correct: 2
             },
             {
                 chap: "Probability",
-                q: "If $P(A) = 1/2, P(B) = 0$, then $P(A|B)$ is:",
-                options: ["0", "1/2", "Not defined", "1"],
-                correct: 2
+                q: "A bag contains 5 red and 3 blue balls. If 3 balls are drawn at random without replacement, then the probability that exactly two are red is:",
+                options: ["$15/28$", "$3/8$", "$4/7$", "None"],
+                correct: 0
+            },
+            {
+                chap: "Calculus",
+                q: "If $f(x) = |x - 1|$, then at $x = 1$, $f(x)$ is:",
+                options: ["Continuous and Differentiable", "Continuous but not Differentiable", "Differentiable but not Continuous", "Neither"],
+                correct: 1
+            },
+            {
+                chap: "Integrals",
+                q: "The value of $\int_{-\pi/2}^{\pi/2} \sin^7 x \, dx$ is:",
+                options: ["$0$", "$1$", "$2$", "$\pi$"],
+                correct: 0
             }
         ];
 
@@ -347,9 +472,8 @@
             canAnswer = true;
             resetTimer();
 
-            // Trigger MathJax re-render
             if (window.MathJax) {
-                MathJax.typeset();
+                MathJax.typesetPromise();
             }
         }
 
@@ -357,16 +481,20 @@
             clearInterval(timer);
             timeLeft = 30;
             const fill = document.getElementById('timer-fill');
+            fill.style.transition = 'none';
             fill.style.width = '100%';
 
-            timer = setInterval(() => {
-                timeLeft--;
-                fill.style.width = (timeLeft / 30 * 100) + '%';
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    if (canAnswer) checkAnswer(-1); // Time out
-                }
-            }, 1000);
+            setTimeout(() => {
+                fill.style.transition = 'width 1s linear';
+                timer = setInterval(() => {
+                    timeLeft--;
+                    fill.style.width = (timeLeft / 30 * 100) + '%';
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        if (canAnswer) checkAnswer(-1); // Time out
+                    }
+                }, 1000);
+            }, 10);
         }
 
         function checkAnswer(selectedIdx) {
@@ -403,17 +531,18 @@
             const resultScreen = document.getElementById('result-screen');
             resultScreen.style.display = 'block';
 
-            document.getElementById('final-score').innerText = `Your Score: ${score}/${questions.length}`;
+            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
 
             let msg = "";
-            if (score === 10) msg = "Perfect Ishu! 80/80 is waiting for you! 🌟";
-            else if (score >= 7) msg = "Great job! Almost there, keep practicing! 🔥";
-            else msg = "Good effort! Let's revise the Formula Master and try again! 💪";
+            const percentage = (score / questions.length) * 100;
+            if (percentage === 100) msg = "PERFECT! Ishu, you are officially a Math Master! 🌟🏆";
+            else if (percentage >= 80) msg = "Incredible! 80/80 is definitely coming home! 🔥";
+            else if (percentage >= 60) msg = "Well done! A bit more practice and you'll be unstoppable! 💪";
+            else msg = "Good try! Revise the Formula Master and you'll do even better next time! 📚";
 
             document.getElementById('performance-msg').innerText = msg;
         }
 
-        // Start
         loadQuestion();
     </script>
 
