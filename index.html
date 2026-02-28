@@ -4,24 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math MCQ Quiz | Ishu's Math Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    <title>Math MCQ Quiz | Practice Mode | Target 80/80</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;700&display=swap"
         rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         :root {
-            --bg: #05080f;
-            --surface: rgba(255, 255, 255, 0.04);
-            --border: rgba(255, 255, 255, 0.08);
-
-            --primary: {
-                    {
-                    COLOR
-                }
-            }
-
-            ;
-            --text: #e2e8f0;
-            --muted: #64748b;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --correct: #22c55e;
+            --wrong: #ef4444;
+            --text: #f8fafc;
         }
 
         * {
@@ -31,86 +26,397 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
             color: var(--text);
             min-height: 100vh;
-            padding: 2rem;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            background-image: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05), transparent 70%);
         }
 
         .container {
-            text-align: center;
-            background: var(--surface);
-            padding: 3rem;
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            max-width: 600px;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
             width: 100%;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-            position: relative;
-            overflow: hidden;
         }
 
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary);
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: #94a3b8;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: 0.3s;
         }
 
-        .icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+        .btn-back:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
         }
 
         h1 {
+            font-family: 'Outfit', sans-serif;
             font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
+            color: var(--accent);
         }
 
-        p {
-            color: var(--muted);
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .quiz-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .question-meta {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
             line-height: 1.6;
             margin-bottom: 2rem;
-            font-size: 1.1rem;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border);
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.2rem;
             border-radius: 12px;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1.1rem;
+            outline: none;
         }
 
-        .btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: #fff;
-            transform: translateY(-2px);
+        .option-btn:hover:not(:disabled) {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--accent);
+        }
+
+        .option-btn.selected {
+            background: var(--accent);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .option-btn.correct {
+            background: var(--correct);
+            color: #000;
+            font-weight: bold;
+            border-color: var(--correct);
+        }
+
+        .option-btn.wrong {
+            background: var(--wrong);
+            color: white;
+            border-color: var(--wrong);
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            display: none;
+        }
+
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .result-screen h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .restart-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 2rem;
+        }
+
+        .timer-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .quiz-card {
+                padding: 1.5rem;
+            }
+        }
+
+        .mjx-chtml {
+            color: inherit !important;
         }
     </style>
 </head>
 
 <body>
+
     <div class="container">
-        <div class="icon"></div>
-        <h1>Math MCQ Quiz</h1>
-        <p>Chapter-wise multiple choice questions.</p>
-        <a href="https://thoratpratik2323-hue.github.io/ishu-math-hub/" class="btn">â† Back to Math Hub</a>
+        <a href="https://thoratpratik2323-hue.github.io/ishu-math-hub/" class="btn-back">← Back to Hub</a>
+
+        <header>
+            <h1>Math MCQ Master 🎯</h1>
+            <p style="color: #94a3b8;">Section A: Practice 20 Marks Pattern</p>
+        </header>
+
+        <div id="quiz-container">
+            <div class="score-board">
+                <span id="question-count">Question 1/10</span>
+                <span id="score-text">Score: 0</span>
+            </div>
+
+            <div class="timer-bar">
+                <div id="timer-fill" class="timer-fill"></div>
+            </div>
+
+            <div class="quiz-card" id="quiz-card">
+                <span class="question-meta" id="chap-name">Chapter 1: Relations & Functions</span>
+                <div class="question-text" id="question-text">Loading question...</div>
+
+                <div class="options-grid" id="options-container">
+                    <!-- Options injected here -->
+                </div>
+
+                <div class="controls">
+                    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-screen" id="result-screen">
+            <h2>Quiz Complete! 🎉</h2>
+            <p id="final-score" style="font-size: 1.5rem;"></p>
+            <p id="performance-msg"></p>
+            <button class="restart-btn" onclick="location.reload()">Try Again 🔄</button>
+        </div>
     </div>
+
+    <script>
+        const questions = [
+            {
+                chap: "Relations & Functions",
+                q: "Let A = {1, 2, 3}. The number of equivalence relations containing (1, 2) is:",
+                options: ["1", "2", "3", "4"],
+                correct: 1
+            },
+            {
+                chap: "Inverse Trigo",
+                q: "The principal value of $\\sin^{-1} ( \\sin \\frac{2\\pi}{3} )$ is:",
+                options: ["$2\\pi/3$", "$\\pi/3$", "$\\pi/6$", "$-\\pi/3$"],
+                correct: 1
+            },
+            {
+                chap: "Matrices",
+                q: "If A and B are symmetric matrices of same order, then AB - BA is a:",
+                options: ["Skew symmetric matrix", "Symmetric matrix", "Zero matrix", "Identity matrix"],
+                correct: 0
+            },
+            {
+                chap: "Determinants",
+                q: "If A is a square matrix of order 3 and $|A| = 5$, then $|adj A|$ is:",
+                options: ["5", "25", "125", "625"],
+                correct: 1
+            },
+            {
+                chap: "Calculus",
+                q: "The derivative of $\\log_{10} x$ with respect to $x$ is:",
+                options: ["$1/x$", "$1/(x \\ln 10)$", "$\\ln 10 / x$", "None of these"],
+                correct: 1
+            },
+            {
+                chap: "Application of Derivatives",
+                q: "The slope of the tangent to the curve $y = x^3 - x$ at $x = 2$ is:",
+                options: ["11", "12", "10", "6"],
+                correct: 0
+            },
+            {
+                chap: "Integrals",
+                q: "Evaluate $\\int e^x (\\tan x + \\text{sec}^2x) dx$:",
+                options: ["$e^x \\tan x + C$", "$e^x \\sec x + C$", "$e^x \\sec^2x + C$", "None"],
+                correct: 0
+            },
+            {
+                chap: "Vectors",
+                q: "If $\\vec{a}$ is a non-zero vector of magnitude 'a' and $\\lambda$ a non-zero scalar, then $\\lambda \\vec{a}$ is a unit vector if:",
+                options: ["$\\lambda = 1$", "$\\lambda = -1$", "$a = |\\lambda|$", "$a = 1/|\\lambda|$"],
+                correct: 3
+            },
+            {
+                chap: "3D Geometry",
+                q: "The distance of point (2, 3, 4) from the x-axis is:",
+                options: ["2", "$\\sqrt{13}$", "5", "$\\sqrt{20}$"],
+                correct: 2
+            },
+            {
+                chap: "Probability",
+                q: "If $P(A) = 1/2, P(B) = 0$, then $P(A|B)$ is:",
+                options: ["0", "1/2", "Not defined", "1"],
+                correct: 2
+            }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let canAnswer = true;
+        let timer;
+        let timeLeft = 30;
+
+        function loadQuestion() {
+            const qData = questions[currentIdx];
+            document.getElementById('chap-name').innerText = qData.chap;
+            document.getElementById('question-text').innerHTML = qData.q;
+            document.getElementById('question-count').innerText = `Question ${currentIdx + 1}/${questions.length}`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            qData.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(i);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('next-btn').style.display = 'none';
+            canAnswer = true;
+            resetTimer();
+
+            // Trigger MathJax re-render
+            if (window.MathJax) {
+                MathJax.typeset();
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 30;
+            const fill = document.getElementById('timer-fill');
+            fill.style.width = '100%';
+
+            timer = setInterval(() => {
+                timeLeft--;
+                fill.style.width = (timeLeft / 30 * 100) + '%';
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (canAnswer) checkAnswer(-1); // Time out
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(selectedIdx) {
+            if (!canAnswer) return;
+            canAnswer = false;
+            clearInterval(timer);
+
+            const correctIdx = questions[currentIdx].correct;
+            const btns = document.querySelectorAll('.option-btn');
+
+            if (selectedIdx === correctIdx) {
+                score++;
+                btns[selectedIdx].classList.add('correct');
+            } else {
+                if (selectedIdx !== -1) btns[selectedIdx].classList.add('wrong');
+                btns[correctIdx].classList.add('correct');
+            }
+
+            document.getElementById('score-text').innerText = `Score: ${score}`;
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.style.display = 'block';
+
+            document.getElementById('final-score').innerText = `Your Score: ${score}/${questions.length}`;
+
+            let msg = "";
+            if (score === 10) msg = "Perfect Ishu! 80/80 is waiting for you! 🌟";
+            else if (score >= 7) msg = "Great job! Almost there, keep practicing! 🔥";
+            else msg = "Good effort! Let's revise the Formula Master and try again! 💪";
+
+            document.getElementById('performance-msg').innerText = msg;
+        }
+
+        // Start
+        loadQuestion();
+    </script>
+
 </body>
 
 </html>
